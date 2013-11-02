@@ -1,7 +1,9 @@
 var doc = app.activeDocument;
 var doc_name = doc.name;
 
-var tpl_path = "~/Work/js/template/";
+//	模版文件的路径
+var tpl_path = "E:/PS_Export/template/";
+//var tpl_path = "~/";
 function readTpl(name){
 	var filename = tpl_path+name;
 	var file = new File(filename);
@@ -11,7 +13,12 @@ function readTpl(name){
 	return tplContent;
 }
 
+var header = readTpl('header.tpl');
+var footer = readTpl('footer.tpl');
 var UILabel = readTpl('UILabel.tpl');
+var UIButton = readTpl('UIButton.tpl');
+var UITextField = readTpl('UITextField.tpl');
+var UIImageView = readTpl('UIImageView.tpl');
 
 function proc_group(layers){
 	for(var i=0; i<layers.length; i++){
@@ -21,14 +28,15 @@ function proc_group(layers){
 		if( ! layer.visible ) {
 			continue;
 		}
-
+		/*
 		if( layer instanceof LayerSet){
 			//	遍历组
 			proc_group(layer.layers);
 		}
 		else{
 			proc_layer(layer);
-		}
+		}*/
+		proc_layer(layer);
 	}
 }
 
@@ -37,22 +45,65 @@ function proc_layer(art_layer){
 	//	解析名称
 	var name = art_layer.name;
 	var b = art_layer.bounds;
-	parsed_info.x = b[0];
-	parsed_info.y = b[1];
-	parsed_info.w = b[2] - b[0];
-	parsed_info.h = b[3] - b[1];
-
+	parsed_info.x = parseInt(b[0])/2;
+	parsed_info.y = parseInt(b[1])/2;
+	parsed_info.w = parseInt(b[2] - b[0])/2;
+	parsed_info.h = parseInt(b[3] - b[1])/2;
+	//	retina屏
+	parsed_info.y = parsed_info.y -64;
+	parsed_info.classname = getClassName(name);
+	parsed_info.name = getInstanceName(name);
+	var attr = getAttr(name);
+	
+	if( null != attr){
+		for(var key in attr){
+			parsed_info[key] = attr[key];
+		}
+	}
+	
 	if( LayerKind.TEXT == art_layer.kind){
+		//	内容
+		parsed_info.content = art_layer.textItem.contents.replace(/\r|\n/ig, '');
+		parsed_info.font = art_layer.textItem.font;
+		parsed_info.fontsize = parseInt(art_layer.textItem.size)/2;
+		//	颜色
+		parsed_info.r = art_layer.textItem.color.rgb.red/255;
+		parsed_info.g = art_layer.textItem.color.rgb.green/255;
+		parsed_info.b = art_layer.textItem.color.rgb.blue/255;
 		//	文本
+		var code = substitute(UILabel, parsed_info);
+		header += code;
+		
 		return;
 	}
 	
-	parsed_info.classname = getClassName(name);
-	parsed_info.name = getInstanceName(name);
-	//getAttr(name);
-	alert(substitute(UILabel, parsed_info));
+	var source_string = getSourceString(parsed_info.classname);
+	var code = substitute(source_string, parsed_info);
+	header += code;
+	
+	if( 'UIImageView' == parsed_info.classname || 'UITextField' == parsed_info.classname){
+		art_layer.copy();
+		var newDoc = app.documents.add(parsed_info.w*2, parsed_info.h*2, 72.0, "tmp", NewDocumentMode.RGB, DocumentFill.TRANSPARENT);
+		newDoc.paste();
+		image_name = parsed_info.normal;
+		if( '' == image_name){
+			image_name = "default";
+		}
+		save_png(newDoc, image_name);
+		newDoc.close(SaveOptions.DONOTSAVECHANGES);
+	}
 }
 
+//	保存
+function save_png(doc, fileName){
+    var saveOptions = new PNGSaveOptions();
+    saveOptions.interlaced = true;
+	fileName = fileName.replace(/\./,'@2x.');
+    var path = "E:/yoyo/ps导出/" + fileName;   
+	//	导出图片的路径
+	//var path = "e:/ps_pngs/" + fileName;
+    doc.saveAs(new File(path), saveOptions, true, Extension.LOWERCASE);
+}
 //	C++对象
 function object(){
 	this.x = 0;
@@ -95,6 +146,13 @@ function getAttr(string){
 	return null;
 }
 
+//	获取源字符串
+function getSourceString(string){
+	var code = "(function(){return " +string+";}())";
+	var ret = eval(code);
+	return ret;
+}
+
 function substitute(str, obj){
 	if(!(Object.prototype.toString.call(str) === '[object String]')){
 		return '';
@@ -104,7 +162,7 @@ function substitute(str, obj){
 		return str;
 	}
 
-	return str.replace(/\{([^{}]+)\}/g, function(match, key){
+	return str.replace(/\<([^<>]+)\>/g, function(match, key){
 		var value = obj[key];
 		return ( value !== undefined) ? ''+value :'';
 	});
@@ -113,10 +171,15 @@ function substitute(str, obj){
 //	遍历所有的层
 proc_group(doc.layers);
 
-//	保存
-var dest_file = "~/Work/js/"+doc_name;
+header += footer;
+//	输出文件的路径
+var dest_file = "E:/yoyo/ps导出/"+doc_name.replace('psd', 'h');
+//var dest_file = "~/"+doc_name.replace('psd', 'h');
 var file = new File(dest_file);
+file.encoding="UTF-8";
 file.open("w");
-file.write("dotboy");
+file.write('');
+file.write(header);
 file.close();
+
 
