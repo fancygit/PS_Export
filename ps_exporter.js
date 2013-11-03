@@ -2,10 +2,19 @@ var doc = app.activeDocument;
 var doc_name = doc.name;
 
 //	模版文件的路径
-var tpl_path = "E:/PS_Export/template/";
-//var tpl_path = "~/";
+//var tpl_save_path = "E:/PS_Export/template/";
+var tpl_save_path = "~/Work/PS_Export/template/";
+
+//	输出文件的路径
+//var dest_file = "E:/yoyo/ps导出/"+doc_name.replace('psd', 'h');
+var dest_file = "/Users/dotboy/Work/ps导出/"+doc_name.replace('psd', 'h');
+
+//	导出图片的路径
+//var save_path = "E:/yoyo/ps导出/" + fileName;   
+var save_path = "/Users/dotboy/Work/ps导出/";
+
 function readTpl(name){
-	var filename = tpl_path+name;
+	var filename = tpl_save_path+name;
 	var file = new File(filename);
 	file.open('r');
 	var tplContent = file.read();
@@ -99,10 +108,7 @@ function save_png(doc, fileName){
     var saveOptions = new PNGSaveOptions();
     saveOptions.interlaced = true;
 	fileName = fileName.replace(/\./,'@2x.');
-    var path = "E:/yoyo/ps导出/" + fileName;   
-	//	导出图片的路径
-	//var path = "e:/ps_pngs/" + fileName;
-    doc.saveAs(new File(path), saveOptions, true, Extension.LOWERCASE);
+    doc.saveAs(new File(save_path+fileName), saveOptions, true, Extension.LOWERCASE);
 }
 //	C++对象
 function object(){
@@ -172,11 +178,9 @@ function substitute(str, obj){
 proc_group(doc.layers);
 
 header += footer;
-//	输出文件的路径
-var dest_file = "E:/yoyo/ps导出/"+doc_name.replace('psd', 'h');
-//var dest_file = "~/"+doc_name.replace('psd', 'h');
 var file = new File(dest_file);
 file.encoding="UTF-8";
+file.lineFeed="windows";
 file.open("w");
 file.write('');
 file.write(header);

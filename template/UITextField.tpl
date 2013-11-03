@@ -1,3 +1,5 @@
 	<name>.frame =  CGRectMake(<x>, <y>, <w>, <h>);
-	[<name> setBackground:[UIImage imageNamed:@"<normal>"]];
+	<comment>[<name> setBackground:[UIImage imageNamed:@"<normal>"]];
+	<name>.clearsOnBeginEditing = YES;
+	<name>.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
 	

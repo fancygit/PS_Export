@@ -3,5 +3,6 @@
 	<name>.text = @"<content>";
 	<name>.font = [UIFont fontWithName:@"<font>" size:<fontsize>];
 	[<name> setTextColor:[UIColor colorWithRed:<r> green:<g> blue:<b> alpha:1.0]];
+	[<name> setLineBreakMode:NSLineBreakByWordWrapping];  
 	[self.baseView addSubview:<name>];
 	
