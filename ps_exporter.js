@@ -2,16 +2,16 @@ var doc = app.activeDocument;
 var doc_name = doc.name;
 
 //	模版文件的路径
-//var tpl_save_path = "E:/PS_Export/template/";
-var tpl_save_path = "~/Work/PS_Export/template/";
+var tpl_save_path = "E:/PS_Export/template/";
+//var tpl_save_path = "~/Work/PS_Export/template/";
 
 //	输出文件的路径
-//var dest_file = "E:/yoyo/ps导出/"+doc_name.replace('psd', 'h');
-var dest_file = "/Users/dotboy/Work/ps导出/"+doc_name.replace('psd', 'h');
+var dest_file = "E:/yoyo/ps导出/"+doc_name.replace('psd', 'h');
+//var dest_file = "/Users/dotboy/Work/ps导出/"+doc_name.replace('psd', 'h');
 
 //	导出图片的路径
-//var save_path = "E:/yoyo/ps导出/" + fileName;   
-var save_path = "/Users/dotboy/Work/ps导出/";
+var save_path = "E:/yoyo/ps导出/";   
+//var save_path = "/Users/dotboy/Work/ps导出/";
 
 function readTpl(name){
 	var filename = tpl_save_path+name;
@@ -28,6 +28,8 @@ var UILabel = readTpl('UILabel.tpl');
 var UIButton = readTpl('UIButton.tpl');
 var UITextField = readTpl('UITextField.tpl');
 var UIImageView = readTpl('UIImageView.tpl');
+
+header = substitute(header, new object);
 
 function proc_group(layers){
 	for(var i=0; i<layers.length; i++){
@@ -70,9 +72,9 @@ function proc_layer(art_layer){
 		}
 	}
 	
-	if( LayerKind.TEXT == art_layer.kind){
+	if( LayerKind.TEXT == art_layer.kind && null == parsed_info.classname){
 		//	内容
-		parsed_info.content = art_layer.textItem.contents.replace(/\r|\n/ig, '');
+		parsed_info.content = art_layer.textItem.contents.replace(/\r|\n/ig, "\\n");
 		parsed_info.font = art_layer.textItem.font;
 		parsed_info.fontsize = parseInt(art_layer.textItem.size)/2;
 		//	颜色
@@ -116,8 +118,12 @@ function object(){
 	this.y = 0;
 	this.w = 0;
 	this.h = 0;
+	this.l = 1;
 	this.name = '';
 	this.classname = '';
+	//this.ifName= 'LoginViewController';
+	this.ifName=doc_name.substring(0,doc_name.lastIndexOf('.'));
+	this.cgName=this.ifName+'Category';
 }
 
 //	获取类型名

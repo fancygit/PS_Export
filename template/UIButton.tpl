@@ -1,4 +1,5 @@
-	<name>.frame =  CGRectMake(<x>, <y>, <w>, <h>);
-	[<name> setBackgroundImage:[UIImage imageNamed:@"<normal>"] forState:UIControlStateNormal];
-	[<name> setBackgroundImage:[UIImage imageNamed:@"<highlight>"] forState:UIControlStateHighlighted];
+	<name> = [UIButton buttonWithType:UIButtonTypeCustom];
+	<name>.frame = CGRectMake(<x>,<y>,<w>,<h>);
+	[<name> setTitleColor:[UIColor blueColor] forState:0];
+	[self.baseView addSubview:<name>];
 

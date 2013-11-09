@@ -5,7 +5,11 @@
  */
  
  
- //@interface <classname>
+ @interface <ifName>(<cgName>)
+ - (void)setupUI;
+ @end
+ 
+ @implementation <ifName>(<cgName>)
  - (void)setupUI
  {
  
