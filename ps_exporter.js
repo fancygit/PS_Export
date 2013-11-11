@@ -32,7 +32,7 @@ var UIImageView = readTpl('UIImageView.tpl');
 header = substitute(header, new object);
 
 function proc_group(layers){
-	for(var i=0; i<layers.length; i++){
+	for(var i=layers.length-1; i>=0; i--){
 		var layer = layers[i]; 
 
 		//	忽略不可见层
@@ -92,13 +92,13 @@ function proc_layer(art_layer){
 	var code = substitute(source_string, parsed_info);
 	header += code;
 	
-	if( 'UIImageView' == parsed_info.classname || 'UITextField' == parsed_info.classname){
+	if( 'UIImageView' == parsed_info.classname || 'UITextField' == parsed_info.classname || 'UIButton' == parsed_info.classname){
 		art_layer.copy();
 		var newDoc = app.documents.add(parsed_info.w*2, parsed_info.h*2, 72.0, "tmp", NewDocumentMode.RGB, DocumentFill.TRANSPARENT);
 		newDoc.paste();
-		image_name = parsed_info.normal;
-		if( '' == image_name){
-			image_name = "default";
+		image_name = parsed_info.nm;
+		if( undefined == image_name){
+			image_name = parsed_info.normal;
 		}
 		save_png(newDoc, image_name);
 		newDoc.close(SaveOptions.DONOTSAVECHANGES);
@@ -109,7 +109,8 @@ function proc_layer(art_layer){
 function save_png(doc, fileName){
     var saveOptions = new PNGSaveOptions();
     saveOptions.interlaced = true;
-	fileName = fileName.replace(/\./,'@2x.');
+	//fileName = fileName.replace(/\./,'@2x.');
+	fileName += '@2x.png';
     doc.saveAs(new File(save_path+fileName), saveOptions, true, Extension.LOWERCASE);
 }
 //	C++对象
