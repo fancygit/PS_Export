@@ -2,16 +2,18 @@ var doc = app.activeDocument;
 var doc_name = doc.name;
 
 //	模版文件的路径
-var tpl_save_path = "E:/PS_Export/template/";
-//var tpl_save_path = "~/Work/PS_Export/template/";
+//var tpl_save_path = "E:/PS_Export/template/";
+var tpl_save_path = "~/Source/PS_Export/template/";
 
 //	输出文件的路径
-var dest_file = "E:/yoyo/ps导出/"+doc_name.replace('psd', 'h');
+//var dest_file = "E:/yoyo/ps导出/"+doc_name.replace('psd', 'h');
 //var dest_file = "/Users/dotboy/Work/ps导出/"+doc_name.replace('psd', 'h');
+var dest_file = "~/Projects/YOYO/YOYO/UI/"+doc_name.replace('psd', 'h');
 
 //	导出图片的路径
-var save_path = "E:/yoyo/ps导出/";   
+//var save_path = "E:/yoyo/ps导出/";   
 //var save_path = "/Users/dotboy/Work/ps导出/";
+var save_path = "~/Projects/YOYO/YOYO/images/";
 
 function readTpl(name){
 	var filename = tpl_save_path+name;
@@ -71,6 +73,17 @@ function proc_layer(art_layer){
 			parsed_info[key] = attr[key];
 		}
 	}
+
+	if( LayerKind.TEXT == art_layer.kind)
+	{
+		//	颜色
+		parsed_info.r = art_layer.textItem.color.rgb.red/255;
+		parsed_info.g = art_layer.textItem.color.rgb.green/255;
+		parsed_info.b = art_layer.textItem.color.rgb.blue/255;
+		parsed_info.text= art_layer.textItem.contents.replace(/\r|\n/ig, "\\n");
+		parsed_info.fontsize = parseInt(art_layer.textItem.size)/2;
+		parsed_info.w = parsed_info.text.length * parsed_info.fontsize;
+	}
 	
 	if( LayerKind.TEXT == art_layer.kind && null == parsed_info.classname){
 		//	内容
@@ -100,7 +113,9 @@ function proc_layer(art_layer){
 		if( undefined == image_name){
 			image_name = parsed_info.normal;
 		}
-		save_png(newDoc, image_name);
+		if( undefined != image_name){
+			save_png(newDoc, image_name);
+		}
 		newDoc.close(SaveOptions.DONOTSAVECHANGES);
 	}
 }
@@ -121,6 +136,7 @@ function object(){
 	this.h = 0;
 	this.l = 1;
 	this.name = '';
+	this.ct = '//';
 	this.classname = '';
 	//this.ifName= 'LoginViewController';
 	this.ifName=doc_name.substring(0,doc_name.lastIndexOf('.'));

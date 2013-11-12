@@ -1,4 +1,5 @@
-	UILabel *<name> = [[UILabel alloc] initWithFrame:CGRectMake(<x>, <y>, <w>, <h>)];
+	<cd>UILabel *<name> = nil;
+	<name> = [[UILabel alloc] initWithFrame:CGRectMake(<x>, <y>, <w>, <h>)];
 	<name>.backgroundColor = [UIColor clearColor];
 	<name>.text = @"<content>";
 	<name>.font = [UIFont boldSystemFontOfSize:<fontsize>.0f];

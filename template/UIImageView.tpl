@@ -1,5 +1,6 @@
-	<comment>UIImageView* <name> = [[UIImageView alloc]init];
+	<cd>UIImageView* <name> = nil;
+	<name> = [[UIImageView alloc]init];
 	<name>.frame =  CGRectMake(<x>, <y>, <w>, <h>);
 	[<name> setImage:[UIImage imageNamed:@"<nm>.png"]];
-	<comment>[self.baseView addSubview:<name>];
+	[self.baseView addSubview:<name>];
 	
