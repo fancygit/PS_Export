@@ -6,10 +6,10 @@
  
  
  @interface <ifName>(<cgName>)
- - (void)setupUI;
+ - (void)setupUI:(UIView *)parentView;
  @end
  
  @implementation <ifName>(<cgName>)
- - (void)setupUI
+ - (void)setupUI:(UIView *)parentView
  {
  

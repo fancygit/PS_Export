@@ -63,7 +63,12 @@ function proc_layer(art_layer){
 	parsed_info.w = parseInt(b[2] - b[0])/2;
 	parsed_info.h = parseInt(b[3] - b[1])/2;
 	//	retina屏
-	parsed_info.y = parsed_info.y -64;
+
+	//	是Controller时需要减64
+	if( -1 != doc_name.indexOf("Controller") )
+	{
+		parsed_info.y = parsed_info.y -64;
+	}
 	parsed_info.classname = getClassName(name);
 	parsed_info.name = getInstanceName(name);
 	var attr = getAttr(name);
@@ -141,6 +146,8 @@ function object(){
 	//this.ifName= 'LoginViewController';
 	this.ifName=doc_name.substring(0,doc_name.lastIndexOf('.'));
 	this.cgName=this.ifName+'Category';
+	this.view= '//';
+	this.controller= '';
 }
 
 //	获取类型名
@@ -189,6 +196,12 @@ function substitute(str, obj){
 
 	if(!(Object.prototype.toString.call(obj) === '[object Object]' && 'isPrototypeOf' in obj)){
 		return str;
+	}
+
+	if( -1 == doc_name.indexOf("Controller") )
+	{
+		obj.controller = '//';
+		obj.view = '';
 	}
 
 	return str.replace(/\<([^<>]+)\>/g, function(match, key){

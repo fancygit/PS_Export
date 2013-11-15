@@ -2,5 +2,5 @@
 	<comment>[<name> setBackground:[UIImage imageNamed:@"<nm>.png"]];
 	//<name>.clearsOnBeginEditing = YES;
 	<name>.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-	[self.baseView addSubview:<name>];
+	[parentView addSubview:<name>];
 	

@@ -7,6 +7,5 @@
 	[<name> setLineBreakMode:NSLineBreakByWordWrapping];  
 	<name>.textAlignment = NSTextAlignmentLeft;
 	<name>.numberOfLines = <l>;
-	[self.baseView addSubview:<name>];
-
+	[parentView addSubview:<name>];
 	

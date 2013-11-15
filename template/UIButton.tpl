@@ -5,5 +5,5 @@
 	<ct><name>.titleLabel.font = [UIFont boldSystemFontOfSize:<fontsize>.0f];
 	<ci>[<name> setBackgroundImage:[UIImage imageNamed:@"<nm>.png"] forState:UIControlStateNormal];
 	<cs>[<name> setBackgroundImage:[UIImage imageNamed:@"<sl>.png"] forState:UIControlStateSelected];
-	[self.baseView addSubview:<name>];
+	[parentView addSubview:<name>];
 
