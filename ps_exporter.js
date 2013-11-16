@@ -87,7 +87,17 @@ function proc_layer(art_layer){
 		parsed_info.b = art_layer.textItem.color.rgb.blue/255;
 		parsed_info.text= art_layer.textItem.contents.replace(/\r|\n/ig, "\\n");
 		parsed_info.fontsize = parseInt(art_layer.textItem.size)/2;
-		parsed_info.w = parsed_info.text.length * parsed_info.fontsize;
+		var index = parsed_info.text.indexOf('\\n');
+		if( -1 == index)
+		{
+			parsed_info.w = parsed_info.text.length * parsed_info.fontsize;
+		}
+		else
+		{
+			var oneline = parsed_info.text.substr(0, index);
+			parsed_info.w = oneline.length * parsed_info.fontsize;
+		}
+		parsed_info.h+=1;
 	}
 	
 	if( LayerKind.TEXT == art_layer.kind && null == parsed_info.classname){
