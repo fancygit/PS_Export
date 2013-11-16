@@ -41,15 +41,20 @@ function proc_group(layers){
 		if( ! layer.visible ) {
 			continue;
 		}
-		/*
-		if( layer instanceof LayerSet){
+
+		if( layer instanceof ArtLayer){
+			//	图片层
+			if( layer.isBackgroundLayer)
+			{
+				continue;
+			}
+			//alert(layer.parent.name);
+			proc_layer(layer);
+		}
+		else{
 			//	遍历组
 			proc_group(layer.layers);
 		}
-		else{
-			proc_layer(layer);
-		}*/
-		proc_layer(layer);
 	}
 }
 
