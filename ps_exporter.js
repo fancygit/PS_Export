@@ -30,6 +30,8 @@ var UILabel = readTpl('UILabel.tpl');
 var UIButton = readTpl('UIButton.tpl');
 var UITextField = readTpl('UITextField.tpl');
 var UIImageView = readTpl('UIImageView.tpl');
+var StoryView = readTpl('StoryView.tpl');
+var UIScrollView = readTpl('UIScrollView.tpl');
 
 header = substitute(header, new object);
 
@@ -70,7 +72,7 @@ function proc_layer(art_layer){
 	//	retina屏
 
 	//	是Controller时需要减64
-	if( -1 != doc_name.indexOf("Controller") )
+	if( -1 != doc_name.indexOf("Controller") && doc_name != "StoryViewController.psd")
 	{
 		parsed_info.y = parsed_info.y -64;
 	}
@@ -82,6 +84,21 @@ function proc_layer(art_layer){
 		for(var key in attr){
 			parsed_info[key] = attr[key];
 		}
+	}
+
+	//	看是否存在设置定位点
+	if( 7 == parsed_info.ac )
+	{
+		parsed_info.acx=0;
+		parsed_info.acy=1;
+		parsed_info.py = 'parentView.bounds.size.height';
+		parsed_info.px = 0;
+	}
+
+	if( parsed_info.f == 1)
+	{
+		//全屏模式，放在底部
+		parsed_info.y = 'parentView.bounds.size.height - 500 + '+parsed_info.y;
 	}
 
 	if( LayerKind.TEXT == art_layer.kind)
@@ -157,6 +174,7 @@ function object(){
 	this.l = 1;
 	this.name = '';
 	this.ct = '//';
+	this.cs = '//';
 	this.classname = '';
 	//this.ifName= 'LoginViewController';
 	this.ifName=doc_name.substring(0,doc_name.lastIndexOf('.'));
