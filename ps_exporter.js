@@ -31,6 +31,7 @@ var UIButton = readTpl('UIButton.tpl');
 var UITextField = readTpl('UITextField.tpl');
 var UIImageView = readTpl('UIImageView.tpl');
 var StoryView = readTpl('StoryView.tpl');
+var StoryStaticView = readTpl('StoryStaticView.tpl');
 var UIScrollView = readTpl('UIScrollView.tpl');
 
 header = substitute(header, new object);
