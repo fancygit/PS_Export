@@ -102,6 +102,11 @@ function proc_layer(art_layer){
 		parsed_info.y = 'parentView.bounds.size.height - 500 + '+parsed_info.y;
 	}
 
+	if( parsed_info.a != undefined)
+	{
+		parsed_info.update  = parsed_info.name+'.alpha='+parsed_info.a+';';
+	}
+
 	if( LayerKind.TEXT == art_layer.kind)
 	{
 		//	颜色
@@ -114,6 +119,10 @@ function proc_layer(art_layer){
 		if( -1 == index)
 		{
 			parsed_info.w = parsed_info.text.length * parsed_info.fontsize;
+			if( parsed_info.h < parsed_info.fontsize)
+			{
+				parsed_info.h = parsed_info.fontsize;
+			}
 		}
 		else
 		{
@@ -143,7 +152,7 @@ function proc_layer(art_layer){
 	var code = substitute(source_string, parsed_info);
 	header += code;
 	
-	if( 'UIImageView' == parsed_info.classname || 'UITextField' == parsed_info.classname || 'UIButton' == parsed_info.classname){
+	if( undefined != parsed_info.nm || 'UIImageView' == parsed_info.classname || 'UITextField' == parsed_info.classname || 'UIButton' == parsed_info.classname){
 		art_layer.copy();
 		var newDoc = app.documents.add(parsed_info.w*2, parsed_info.h*2, 72.0, "tmp", NewDocumentMode.RGB, DocumentFill.TRANSPARENT);
 		newDoc.paste();
