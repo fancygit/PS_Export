@@ -8,5 +8,5 @@
 	<name>.textAlignment = NSTextAlignmentLeft;
 	<name>.numberOfLines = <l>;
 	<update>
-	[parentView addSubview:<name>];
+	[<parent> addSubview:<name>];
 	

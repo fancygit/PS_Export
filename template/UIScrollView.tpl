@@ -3,5 +3,5 @@
 	<name>.frame = CGRectMake(<x>,<y>,<w>,<h>);
 	<name>.layer.anchorPoint = CGPointMake(<acx>, <acy>);
 	<name>.layer.position = CGPointMake(<px>, <py>);
-	[parentView addSubview:<name>];
+	[<parent> addSubview:<name>];
 	

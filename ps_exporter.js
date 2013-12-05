@@ -27,6 +27,7 @@ function readTpl(name){
 var header = readTpl('header.tpl');
 var footer = readTpl('footer.tpl');
 var UILabel = readTpl('UILabel.tpl');
+var UIView = readTpl('UIView.tpl');
 var UIButton = readTpl('UIButton.tpl');
 var UITextField = readTpl('UITextField.tpl');
 var UIImageView = readTpl('UIImageView.tpl');
@@ -36,7 +37,7 @@ var UIScrollView = readTpl('UIScrollView.tpl');
 
 header = substitute(header, new object);
 
-function proc_group(layers){
+function proc_group(layers, parentLayer){
 	for(var i=layers.length-1; i>=0; i--){
 		var layer = layers[i]; 
 
@@ -46,26 +47,49 @@ function proc_group(layers){
 		}
 
 		if( layer instanceof ArtLayer){
-			//	图片层
+			//	背景层
 			if( layer.isBackgroundLayer)
 			{
 				continue;
 			}
 			//alert(layer.parent.name);
-			proc_layer(layer);
+			proc_layer(layer, parentLayer);
 		}
 		else{
 			//	遍历组
-			proc_group(layer.layers);
+			var b = layer.bounds;
+			var parsed_info = new object();
+
+			parsed_info.x = parseInt(b[0])/2;
+			parsed_info.y = parseInt(b[1])/2;
+			parsed_info.w = parseInt(b[2] - b[0])/2;
+			parsed_info.h = parseInt(b[3] - b[1])/2;
+
+			var classname = getClassName(layer.name);
+			parsed_info.name = getInstanceName(layer.name);
+			var source_string = getSourceString(classname);
+			var code = substitute(source_string, parsed_info);
+			header += code;
+			proc_group(layer.layers, layer);
 		}
 	}
 }
 
-function proc_layer(art_layer){
+function proc_layer(art_layer, parentLayer){
 	var parsed_info = new object();
+	var b = art_layer.bounds;
+	if( parentLayer != 'root')
+	{
+		var pb = parentLayer.bounds;
+		b[0] = parseInt(b[0]) - parseInt(pb[0]);
+		b[1] = parseInt(b[1]) - parseInt(pb[1]);
+//		b[2] = parseInt(b[2]) - parseInt(pb[2]);
+//		b[3] = parseInt(b[3]) - parseInt(pb[3]);
+		var parentName = parentLayer.name;
+		parsed_info.parent = getInstanceName(parentName);
+	}
 	//	解析名称
 	var name = art_layer.name;
-	var b = art_layer.bounds;
 	parsed_info.x = parseInt(b[0])/2;
 	parsed_info.y = parseInt(b[1])/2;
 	parsed_info.w = parseInt(b[2] - b[0])/2;
@@ -129,7 +153,7 @@ function proc_layer(art_layer){
 			var oneline = parsed_info.text.substr(0, index);
 			parsed_info.w = oneline.length * parsed_info.fontsize;
 		}
-		parsed_info.h+=1;
+		parsed_info.h+=1*parsed_info.l;
 	}
 	
 	if( LayerKind.TEXT == art_layer.kind && null == parsed_info.classname){
@@ -177,6 +201,7 @@ function save_png(doc, fileName){
 }
 //	C++对象
 function object(){
+	this.parent = 'parentView';			//初始
 	this.x = 0;
 	this.y = 0;
 	this.w = 0;
@@ -254,7 +279,7 @@ function substitute(str, obj){
 }
 
 //	遍历所有的层
-proc_group(doc.layers);
+proc_group(doc.layers,'root');
 
 header += footer;
 var file = new File(dest_file);

@@ -3,5 +3,5 @@
 	<name>.frame =  CGRectMake(<x>, <y>, <w>, <h>);
 	[<name> setImage:[UIImage imageNamed:@"<nm>"]];
 	<update>
-	[parentView addSubview:<name>];
+	[<parent> addSubview:<name>];
 	

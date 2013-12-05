@@ -3,5 +3,5 @@
 	//<name>.clearsOnBeginEditing = YES;
 	<name>.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
 	<update>
-	[parentView addSubview:<name>];
+	[<parent> addSubview:<name>];
 	
