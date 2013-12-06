@@ -6,5 +6,5 @@
 	<ci>[<name> setBackgroundImage:[UIImage imageNamed:@"<nm>.png"] forState:UIControlStateNormal];
 	<cs>[<name> setBackgroundImage:[UIImage imageNamed:@"<sl>.png"] forState:UIControlStateSelected];
 	<update>
-	[parentView addSubview:<name>];
+	[<parent> addSubview:<name>];
 

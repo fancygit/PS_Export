@@ -70,30 +70,39 @@ function proc_group(layers, parentLayer){
 			var source_string = getSourceString(classname);
 			var code = substitute(source_string, parsed_info);
 			header += code;
+			b=null;
 			proc_group(layer.layers, layer);
 		}
 	}
 }
 
 function proc_layer(art_layer, parentLayer){
+	//	解析名称
+	var name = art_layer.name;
 	var parsed_info = new object();
 	var b = art_layer.bounds;
+	var pb = parentLayer.bounds;
 	if( parentLayer != 'root')
 	{
 		var pb = parentLayer.bounds;
+		parsed_info.w = parseInt(b[2] - b[0])/2;
+		parsed_info.h = parseInt(b[3] - b[1])/2;
 		b[0] = parseInt(b[0]) - parseInt(pb[0]);
 		b[1] = parseInt(b[1]) - parseInt(pb[1]);
-//		b[2] = parseInt(b[2]) - parseInt(pb[2]);
-//		b[3] = parseInt(b[3]) - parseInt(pb[3]);
+		parsed_info.x = parseInt(b[0])/2;
+		parsed_info.y = parseInt(b[1])/2;
+	//	b[2] = parseInt(b[2]) - parseInt(pb[2]);
+	//	b[3] = parseInt(b[3]) - parseInt(pb[3]);
 		var parentName = parentLayer.name;
 		parsed_info.parent = getInstanceName(parentName);
 	}
-	//	解析名称
-	var name = art_layer.name;
-	parsed_info.x = parseInt(b[0])/2;
-	parsed_info.y = parseInt(b[1])/2;
-	parsed_info.w = parseInt(b[2] - b[0])/2;
-	parsed_info.h = parseInt(b[3] - b[1])/2;
+	else
+	{
+		parsed_info.x = parseInt(b[0])/2;
+		parsed_info.y = parseInt(b[1])/2;
+		parsed_info.w = parseInt(b[2] - b[0])/2;
+		parsed_info.h = parseInt(b[3] - b[1])/2;
+	}
 	//	retina屏
 
 	//	是Controller时需要减64
@@ -176,7 +185,7 @@ function proc_layer(art_layer, parentLayer){
 	var code = substitute(source_string, parsed_info);
 	header += code;
 	
-	if( undefined != parsed_info.nm || 'UIImageView' == parsed_info.classname || 'UITextField' == parsed_info.classname || 'UIButton' == parsed_info.classname){
+	if( undefined != parsed_info.nm ){
 		art_layer.copy();
 		var newDoc = app.documents.add(parsed_info.w*2, parsed_info.h*2, 72.0, "tmp", NewDocumentMode.RGB, DocumentFill.TRANSPARENT);
 		newDoc.paste();
