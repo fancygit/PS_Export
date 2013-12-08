@@ -61,7 +61,7 @@ function proc_group(layers, parentLayer){
 			var parsed_info = new object();
 
 			parsed_info.x = parseInt(b[0])/2;
-			parsed_info.y = parseInt(b[1])/2;
+			parsed_info.y = parseInt(b[1])/2 - 64;
 			parsed_info.w = parseInt(b[2] - b[0])/2;
 			parsed_info.h = parseInt(b[3] - b[1])/2;
 
@@ -106,9 +106,12 @@ function proc_layer(art_layer, parentLayer){
 	//	retina屏
 
 	//	是Controller时需要减64
-	if( -1 != doc_name.indexOf("Controller") && doc_name != "StoryViewController.psd")
+	if( parentLayer == 'root')
 	{
-		parsed_info.y = parsed_info.y -64;
+		if( -1 != doc_name.indexOf("Controller") && doc_name != "StoryViewController.psd")
+		{
+			parsed_info.y = parsed_info.y -64;
+		}
 	}
 	parsed_info.classname = getClassName(name);
 	parsed_info.name = getInstanceName(name);
