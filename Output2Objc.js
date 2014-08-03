@@ -3,17 +3,13 @@ var doc_name = doc.name;
 
 //	模版文件的路径
 //var tpl_save_path = "E:/PS_Export/template/";
-var tpl_save_path = "~/Source/PS_Export/template/";
-
-//	输出文件的路径
-//var dest_file = "E:/yoyo/ps导出/"+doc_name.replace('psd', 'h');
-//var dest_file = "/Users/dotboy/Work/ps导出/"+doc_name.replace('psd', 'h');
-var dest_file = "~/Projects/YOYO/YOYO/UI/"+doc_name.replace('psd', 'h');
-
+var tpl_save_path = "/Users/dotboy/Tools/PS_Export/template/";
+//	输出头文件的路径
+var dest_file_head = "/Users/dotboy/Projects/ios/WaterWorld/WaterWorld/PSView/"+doc_name.replace('psd', 'h');
+//	输出M文件的路径
+var dest_file_impl = "/Users/dotboy/Projects/ios/WaterWorld/WaterWorld/PSView/"+doc_name.replace('psd', 'm');
 //	导出图片的路径
-//var save_path = "E:/yoyo/ps导出/";   
-//var save_path = "/Users/dotboy/Work/ps导出/";
-var save_path = "~/Projects/YOYO/YOYO/images/";
+var save_path = "/Users/dotboy/Projects/ios/WaterWorld/WaterWorld/images/";
 
 function readTpl(name){
 	var filename = tpl_save_path+name;
@@ -25,6 +21,7 @@ function readTpl(name){
 }
 
 var header = readTpl('header.tpl');
+var impl = readTpl('impl.tpl');
 var footer = readTpl('footer.tpl');
 var UILabel = readTpl('UILabel.tpl');
 var UIView = readTpl('UIView.tpl');
@@ -35,7 +32,9 @@ var StoryView = readTpl('StoryView.tpl');
 var StoryStaticView = readTpl('StoryStaticView.tpl');
 var UIScrollView = readTpl('UIScrollView.tpl');
 
-header = substitute(header, new object);
+output = "";
+var head_info = new object();
+//output = substitute(output, new object);
 
 function proc_group(layers, parentLayer){
 	for(var i=layers.length-1; i>=0; i--){
@@ -69,7 +68,7 @@ function proc_group(layers, parentLayer){
 			parsed_info.name = getInstanceName(layer.name);
 			var source_string = getSourceString(classname);
 			var code = substitute(source_string, parsed_info);
-			header += code;
+			output += code;
 			b=null;
 			proc_group(layer.layers, layer);
 		}
@@ -179,20 +178,30 @@ function proc_layer(art_layer, parentLayer){
 		parsed_info.b = art_layer.textItem.color.rgb.blue/255;
 		//	文本
 		var code = substitute(UILabel, parsed_info);
-		header += code;
+		output += code;
 		
+		if( '//' == parsed_info.c_d )
+		{
+			head_info.def += '\t'+'Label'+'\t*'+parsed_info.name+';\n';
+		}
 		return;
 	}
 	
 	var source_string = getSourceString(parsed_info.classname);
 	var code = substitute(source_string, parsed_info);
-	header += code;
+	output += code;
 	
-	if( undefined != parsed_info.nm ){
+	//	判断是否需要自定义变量
+	if( '//' == parsed_info.cd )
+	{
+		head_info.def += '\t'+parsed_info.classname+'\t*'+parsed_info.name+';\n';
+	}
+
+	if( !!parsed_info.tn ){
 		art_layer.copy();
 		var newDoc = app.documents.add(parsed_info.w*2, parsed_info.h*2, 72.0, "tmp", NewDocumentMode.RGB, DocumentFill.TRANSPARENT);
 		newDoc.paste();
-		image_name = parsed_info.nm;
+		image_name = parsed_info.tn;
 		if( undefined == image_name){
 			image_name = parsed_info.normal;
 		}
@@ -213,18 +222,22 @@ function save_png(doc, fileName){
 }
 //	C++对象
 function object(){
-	this.parent = 'parentView';			//初始
+	this.parent = 'self';			//初始
+	this.import = "<UIKit/UIKit.h>";
 	this.x = 0;
+	this.def='';
 	this.y = 0;
 	this.w = 0;
 	this.h = 0;
 	this.l = 1;
 	this.name = '';
 	this.ct = '//';
+	this.cd = '//';
 	this.cs = '//';
 	this.classname = '';
 	//this.ifName= 'LoginViewController';
 	this.ifName=doc_name.substring(0,doc_name.lastIndexOf('.'));
+	this.noPS=this.ifName.substring(2);
 	this.cgName=this.ifName+'Category';
 	this.view= '//';
 	this.controller= '';
@@ -292,14 +305,23 @@ function substitute(str, obj){
 
 //	遍历所有的层
 proc_group(doc.layers,'root');
-
-header += footer;
-var file = new File(dest_file);
+header = substitute(header, head_info);
+var file = new File(dest_file_head);
 file.encoding="UTF-8";
 file.lineFeed="windows";
 file.open("w");
 file.write('');
 file.write(header);
+file.close();
+
+impl = substitute(impl, head_info);
+output = impl + output + footer;
+var file = new File(dest_file_impl);
+file.encoding="UTF-8";
+file.lineFeed="windows";
+file.open("w");
+file.write('');
+file.write(output);
 file.close();
 
 

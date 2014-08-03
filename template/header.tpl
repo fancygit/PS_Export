@@ -3,13 +3,13 @@
  *	Please Do Not Modify it manually
  *	Author : dotboy
  */
- 
- 
- @interface <ifName>(<cgName>)
- - (void)setupUI:(UIView *)parentView;
+#import <import>
+
+ @interface <ifName> : UIView
+ {
+<def>
+ }
+ - (void)setupUI;
  @end
  
- @implementation <ifName>(<cgName>)
- - (void)setupUI:(UIView *)parentView
- {
  

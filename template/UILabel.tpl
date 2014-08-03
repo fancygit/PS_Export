@@ -1,4 +1,3 @@
-	<cd>UILabel *<name> = nil;
 	<name> = [[UILabel alloc] initWithFrame:CGRectMake(<x>, <y>, <w>, <h>)];
 	<name>.backgroundColor = [UIColor clearColor];
 	<name>.text = @"<content>";
